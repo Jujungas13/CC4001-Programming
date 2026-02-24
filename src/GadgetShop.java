@@ -1,0 +1,460 @@
+
+
+
+
+
+
+
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+
+public class GadgetShop extends JFrame implements ActionListener {
+
+    // Data store
+    private ArrayList<Gadget> gadgets = new ArrayList<>();
+
+    // 10 Text Fields (required)
+    private JTextField txtModel = new JTextField(18);
+    private JTextField txtPrice = new JTextField(18);
+    private JTextField txtWeight = new JTextField(18);
+    private JTextField txtGadgetSize = new JTextField(18);
+
+    private JTextField txtCredit = new JTextField(18);
+    private JTextField txtMemory = new JTextField(18);
+
+    private JTextField txtPhoneNumber = new JTextField(18);
+    private JTextField txtDuration = new JTextField(18);
+
+    private JTextField txtDownloadSize = new JTextField(18);
+    private JTextField txtDisplayNumber = new JTextField(18);
+
+    // Buttons (required)
+    private JButton btnAddMobile = new JButton("Add Mobile");
+    private JButton btnAddMP3 = new JButton("Add MP3");
+    private JButton btnClear = new JButton("Clear");
+    private JButton btnDisplayAll = new JButton("Display All");
+    private JButton btnMakeCall = new JButton("Make A Call");
+    private JButton btnDownloadMusic = new JButton("Download Music");
+
+    // Output area (for nicer feedback)
+    private JTextArea outputArea = new JTextArea(12, 40);
+
+    public GadgetShop() {
+        super("Gadget Shop");
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout(12, 12));
+
+        // Global padding
+        JPanel root = new JPanel(new BorderLayout(12, 12));
+        root.setBorder(new EmptyBorder(12, 12, 12, 12));
+        add(root);
+
+        // Set a clean font across components
+        Font uiFont = new Font("SansSerif", Font.PLAIN, 14);
+        setUIFont(uiFont);
+
+        // ----- Left side: Inputs -----
+        JPanel left = new JPanel();
+        left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
+        root.add(left, BorderLayout.CENTER);
+
+        left.add(makeGadgetPanel());
+        left.add(Box.createVerticalStrut(10));
+        left.add(makeMobilePanel());
+        left.add(Box.createVerticalStrut(10));
+        left.add(makeMP3Panel());
+        left.add(Box.createVerticalStrut(10));
+        left.add(makeActionPanel());
+
+        // ----- Right side: Output -----
+        outputArea.setEditable(false);
+        outputArea.setLineWrap(true);
+        outputArea.setWrapStyleWord(true);
+
+        JScrollPane scroll = new JScrollPane(outputArea);
+        scroll.setBorder(new TitledBorder("Output"));
+        scroll.setPreferredSize(new Dimension(420, 420));
+        root.add(scroll, BorderLayout.EAST);
+
+        // Tooltips (helps usability)
+        txtDisplayNumber.setToolTipText("Index number shown when you add gadgets (0, 1, 2...)");
+        txtCredit.setToolTipText("Mobile credit in minutes");
+        txtMemory.setToolTipText("MP3 available memory");
+        txtDuration.setToolTipText("Call duration in minutes");
+        txtDownloadSize.setToolTipText("Music download size");
+
+        // Events
+        btnAddMobile.addActionListener(this);
+        btnAddMP3.addActionListener(this);
+        btnClear.addActionListener(this);
+        btnDisplayAll.addActionListener(this);
+        btnMakeCall.addActionListener(this);
+        btnDownloadMusic.addActionListener(this);
+
+        // Button sizing
+        Dimension btnSize = new Dimension(160, 34);
+        setButtonSize(btnSize);
+
+        pack();
+        setMinimumSize(new Dimension(900, 520));
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+        log("App started. Add a Mobile or MP3 to begin.");
+    }
+
+    // --------- Panels ---------
+
+    private JPanel makeGadgetPanel() {
+        JPanel p = new JPanel(new GridBagLayout());
+        p.setBorder(new TitledBorder("Gadget Details"));
+
+        GridBagConstraints c = gbc();
+        addRow(p, c, 0, "Model:", txtModel);
+        addRow(p, c, 1, "Price:", txtPrice);
+        addRow(p, c, 2, "Weight:", txtWeight);
+        addRow(p, c, 3, "Size:", txtGadgetSize);
+
+        return p;
+    }
+
+    private JPanel makeMobilePanel() {
+        JPanel p = new JPanel(new GridBagLayout());
+        p.setBorder(new TitledBorder("Mobile"));
+
+        GridBagConstraints c = gbc();
+        addRow(p, c, 0, "Initial Credit (mins):", txtCredit);
+        addRow(p, c, 1, "Phone Number:", txtPhoneNumber);
+        addRow(p, c, 2, "Duration (mins):", txtDuration);
+        addRow(p, c, 3, "Display Number (Index):", txtDisplayNumber);
+
+        return p;
+    }
+
+    private JPanel makeMP3Panel() {
+        JPanel p = new JPanel(new GridBagLayout());
+        p.setBorder(new TitledBorder("MP3"));
+
+        GridBagConstraints c = gbc();
+        addRow(p, c, 0, "Initial Memory:", txtMemory);
+        addRow(p, c, 1, "Download Size:", txtDownloadSize);
+        // Display number is already in the Mobile panel, but still counts as one of the 10 fields.
+        // Keeping it there avoids duplicate fields.
+
+        return p;
+    }
+
+    private JPanel makeActionPanel() {
+        JPanel p = new JPanel(new GridLayout(2, 3, 10, 10));
+        p.setBorder(new TitledBorder("Actions"));
+
+        p.add(btnAddMobile);
+        p.add(btnAddMP3);
+        p.add(btnClear);
+        p.add(btnDisplayAll);
+        p.add(btnMakeCall);
+        p.add(btnDownloadMusic);
+
+        return p;
+    }
+
+    // --------- Input “get” methods (10) ---------
+
+    public String getModel() {
+        return txtModel.getText().trim();
+    }
+
+    public double getPrice() {
+        return Double.parseDouble(txtPrice.getText().trim());
+    }
+
+    public int getWeight() {
+        return Integer.parseInt(txtWeight.getText().trim());
+    }
+
+    // IMPORTANT: renamed to avoid JFrame.getSize() conflict
+    public String getGadgetSize() {
+        return txtGadgetSize.getText().trim();
+    }
+
+    public int getCredit() {
+        return Integer.parseInt(txtCredit.getText().trim());
+    }
+
+    public int getMemory() {
+        return Integer.parseInt(txtMemory.getText().trim());
+    }
+
+    public String getPhoneNumber() {
+        return txtPhoneNumber.getText().trim();
+    }
+
+    public int getDuration() {
+        return Integer.parseInt(txtDuration.getText().trim());
+    }
+
+    public int getDownloadSize() {
+        return Integer.parseInt(txtDownloadSize.getText().trim());
+    }
+
+    // Special method required: try/catch + dialogs + range check
+    public int getDisplayNumber() {
+        int displayNum = -1;
+
+        try {
+            displayNum = Integer.parseInt(txtDisplayNumber.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Display number must be an integer.",
+                    "Invalid Input",
+                    JOptionPane.ERROR_MESSAGE);
+            return -1;
+        }
+
+        if (displayNum < 0 || displayNum >= gadgets.size()) {
+            JOptionPane.showMessageDialog(this,
+                    "Display number is out of range. Valid range: 0 to " + (gadgets.size() - 1),
+                    "Out of Range",
+                    JOptionPane.WARNING_MESSAGE);
+            return -1;
+        }
+
+        return displayNum;
+    }
+
+    // --------- Button behaviour ---------
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object src = e.getSource();
+
+        if (src == btnAddMobile) {
+            addMobile();
+        } else if (src == btnAddMP3) {
+            addMP3();
+        } else if (src == btnClear) {
+            clearFields();
+        } else if (src == btnDisplayAll) {
+            displayAll();
+        } else if (src == btnMakeCall) {
+            makeACall();
+        } else if (src == btnDownloadMusic) {
+            downloadMusic();
+        }
+    }
+
+    private void addMobile() {
+        try {
+            String model = getModel();
+            double price = getPrice();
+            int weight = getWeight();
+            String size = getGadgetSize();
+            int credit = getCredit();
+
+            Mobile m = new Mobile(model, price, weight, size, credit);
+            gadgets.add(m);
+
+            JOptionPane.showMessageDialog(this,
+                    "Mobile added at index " + (gadgets.size() - 1),
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            log("Added Mobile at index " + (gadgets.size() - 1) + ": " + model);
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Check your numeric inputs (price/weight/credit).",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void addMP3() {
+        try {
+            String model = getModel();
+            double price = getPrice();
+            int weight = getWeight();
+            String size = getGadgetSize();
+            int memory = getMemory();
+
+            MP3 mp3 = new MP3(model, price, weight, size, memory);
+            gadgets.add(mp3);
+
+            JOptionPane.showMessageDialog(this,
+                    "MP3 added at index " + (gadgets.size() - 1),
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            log("Added MP3 at index " + (gadgets.size() - 1) + ": " + model);
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Check your numeric inputs (price/weight/memory).",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void clearFields() {
+        txtModel.setText("");
+        txtPrice.setText("");
+        txtWeight.setText("");
+        txtGadgetSize.setText("");
+        txtCredit.setText("");
+        txtMemory.setText("");
+        txtPhoneNumber.setText("");
+        txtDuration.setText("");
+        txtDownloadSize.setText("");
+        txtDisplayNumber.setText("");
+        log("Cleared all fields.");
+    }
+
+    private void displayAll() {
+        if (gadgets.isEmpty()) {
+            log("No gadgets in the shop.");
+            System.out.println("No gadgets in the shop.");
+            return;
+        }
+
+        log("----- DISPLAY ALL GADGETS -----");
+        System.out.println("----- DISPLAY ALL GADGETS -----");
+
+        for (int i = 0; i < gadgets.size(); i++) {
+            log("Index: " + i);
+            System.out.println("Index: " + i);
+            gadgets.get(i).display();
+            log("------------------------------");
+            System.out.println("------------------------------");
+        }
+    }
+
+    private void makeACall() {
+        if (gadgets.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No gadgets available. Add a Mobile first.",
+                    "Nothing to call from",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int index = getDisplayNumber();
+        if (index == -1) return;
+
+        Gadget g = gadgets.get(index);
+        if (!(g instanceof Mobile)) {
+            JOptionPane.showMessageDialog(this,
+                    "That index is not a Mobile. Please choose a Mobile index.",
+                    "Wrong Gadget Type",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            String number = getPhoneNumber();
+            int duration = getDuration();
+
+            Mobile m = (Mobile) g;
+            m.makeCall(number, duration);
+
+            log("Call attempted from index " + index + " to " + number + " for " + duration + " mins.");
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Duration must be an integer.",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void downloadMusic() {
+        if (gadgets.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No gadgets available. Add an MP3 first.",
+                    "Nothing to download to",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int index = getDisplayNumber();
+        if (index == -1) return;
+
+        Gadget g = gadgets.get(index);
+        if (!(g instanceof MP3)) {
+            JOptionPane.showMessageDialog(this,
+                    "That index is not an MP3. Please choose an MP3 index.",
+                    "Wrong Gadget Type",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            int size = getDownloadSize();
+
+            MP3 mp3 = (MP3) g;
+            mp3.downloadMusic(size);
+
+            log("Download attempted to index " + index + " with size " + size + ".");
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Download size must be an integer.",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // --------- Helpers ---------
+
+    private void log(String msg) {
+        outputArea.append(msg + "\n");
+        outputArea.setCaretPosition(outputArea.getDocument().getLength());
+    }
+
+    private GridBagConstraints gbc() {
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(6, 6, 6, 6);
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        return c;
+    }
+
+    private void addRow(JPanel p, GridBagConstraints c, int row, String label, JComponent field) {
+        c.gridy = row;
+
+        c.gridx = 0;
+        c.weightx = 0;
+        p.add(new JLabel(label), c);
+
+        c.gridx = 1;
+        c.weightx = 1;
+        p.add(field, c);
+    }
+
+    private void setButtonSize(Dimension d) {
+        JButton[] buttons = { btnAddMobile, btnAddMP3, btnClear, btnDisplayAll, btnMakeCall, btnDownloadMusic };
+        for (JButton b : buttons) {
+            b.setPreferredSize(d);
+            b.setFocusPainted(false);
+        }
+    }
+
+    private void setUIFont(Font f) {
+        UIManager.put("Label.font", f);
+        UIManager.put("Button.font", f);
+        UIManager.put("TextField.font", f);
+        UIManager.put("TextArea.font", f);
+        UIManager.put("TitledBorder.font", f.deriveFont(Font.BOLD));
+    }
+
+    // main method required
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new GadgetShop());
+    }
+}
