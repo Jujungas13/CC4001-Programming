@@ -34,7 +34,5 @@ Download Music works only with an MP3 index.
 
 Screenshots for required tests are stored in the screenshots/ folder:
 
-Invalid display number dialog boxes (non-integer and out of range)
-Use Clear to reset all fields.
 
 ---
