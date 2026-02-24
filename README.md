@@ -33,12 +33,7 @@ Download Music works only with an MP3 index.
 **Testing Evidence (Screenshots)**
 
 Screenshots for required tests are stored in the screenshots/ folder:
-Add a Mobile
-Add an MP3
-Display all gadgets
-Make a call
-Download music
-Compile + run in Command Prompt
+
 Invalid display number dialog boxes (non-integer and out of range)
 Use Clear to reset all fields.
 
