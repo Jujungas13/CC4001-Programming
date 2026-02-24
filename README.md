@@ -20,3 +20,26 @@ javac Gadget.java Mobile.java MP3.java GadgetShop.java
 java GadgetShop
 
 ---
+**How to Use the GUI#**
+
+Enter gadget details (model, price, weight, size).
+Add a Mobile using the Mobile credit field, or add an MP3 using the memory field.
+Click Display All to view gadgets and their index numbers.
+Use Display Number (Index) to select a gadget:
+Make A Call works only with a Mobile index.
+Download Music works only with an MP3 index.
+
+---
+**Testing Evidence (Screenshots)**
+
+Screenshots for required tests are stored in the screenshots/ folder:
+Add a Mobile
+Add an MP3
+Display all gadgets
+Make a call
+Download music
+Compile + run in Command Prompt
+Invalid display number dialog boxes (non-integer and out of range)
+Use Clear to reset all fields.
+
+---
